@@ -35,6 +35,7 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/contributions', require('./routes/contributions'));
 app.use('/api/guests', require('./routes/guests'));
 app.use('/api/templates', require('./routes/templates'));
+app.use('/api/guest-auth', require('./routes/guestAuth'));
 
 const PORT = process.env.PORT || 5000;
 
