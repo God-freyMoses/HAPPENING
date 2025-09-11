@@ -43,6 +43,31 @@ export default function Dashboard() {
     router.push('/login');
   };
 
+  const handleDeleteEvent = async (eventId: string, eventTitle: string) => {
+    if (!confirm(`Are you sure you want to delete "${eventTitle}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      await axios.delete(`http://localhost:5000/api/events/${eventId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Remove the event from the local state
+      setEvents(events.filter(event => event._id !== eventId));
+      alert('Event deleted successfully!');
+    } catch (error) {
+      console.error('Failed to delete event', error);
+      alert('Failed to delete event. Please try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
@@ -84,12 +109,20 @@ export default function Dashboard() {
                     </div>
                     <p className="text-xs text-gray-500 mt-1">{event.fundingProgress}% funded</p>
                   </div>
-                  <button
-                    onClick={() => router.push(`/event/${event._id}`)}
-                    className="mt-4 bg-indigo-600 text-white px-3 py-1 rounded-md text-sm hover:bg-indigo-700"
-                  >
-                    View Details
-                  </button>
+                  <div className="mt-4 flex space-x-2">
+                    <button
+                      onClick={() => router.push(`/event/${event._id}`)}
+                      className="bg-indigo-600 text-white px-3 py-1 rounded-md text-sm hover:bg-indigo-700"
+                    >
+                      View Details
+                    </button>
+                    <button
+                      onClick={() => handleDeleteEvent(event._id, event.title)}
+                      className="bg-red-600 text-white px-3 py-1 rounded-md text-sm hover:bg-red-700"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

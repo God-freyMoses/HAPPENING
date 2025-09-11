@@ -2,6 +2,7 @@ const express = require('express');
 const Event = require('../models/Event');
 const Guest = require('../models/Guest');
 const Task = require('../models/Task');
+const Template = require('../models/Template');
 const auth = require('../middleware/auth');
 const sgMail = require('@sendgrid/mail');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
@@ -83,12 +84,17 @@ router.get('/', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
   try {
     const { templateId, ...eventData } = req.body;
-    const event = new Event({ ...eventData, userId: req.user.id });
+    // Convert budgetGoal to number
+    const processedEventData = {
+      ...eventData,
+      budgetGoal: parseFloat(eventData.budgetGoal)
+    };
+    const event = new Event({ ...processedEventData, userId: req.user.id });
     await event.save();
 
     let tasksToSave = [];
 
-    if (templateId) {
+    if (templateId && templateId !== 'undefined') {
       // Use template tasks
       const template = await Template.findById(templateId);
       if (template) {
@@ -97,9 +103,58 @@ router.post('/', auth, async (req, res) => {
           eventId: event._id,
           userId: req.user.id
         }));
+      } else {
+        // If template not found in database, it might be a default template
+        // Use hardcoded default templates
+        const defaultTemplates = [
+          {
+            name: 'Birthday Party Template',
+            type: 'birthday',
+            tasks: [
+              { description: 'Book venue and confirm availability', status: 'todo' },
+              { description: 'Create guest list and send invitations', status: 'todo' },
+              { description: 'Order birthday cake and desserts', status: 'todo' },
+              { description: 'Purchase decorations and party supplies', status: 'todo' },
+              { description: 'Arrange entertainment and games', status: 'todo' },
+              { description: 'Plan menu and arrange catering', status: 'todo' },
+              { description: 'Set up music and sound system', status: 'todo' },
+              { description: 'Arrange transportation for guests if needed', status: 'todo' },
+              { description: 'Purchase birthday gifts and party favors', status: 'todo' },
+              { description: 'Plan cleanup and post-party activities', status: 'todo' }
+            ]
+          },
+          {
+            name: 'Funeral Service Template',
+            type: 'funeral',
+            tasks: [
+              { description: 'Contact funeral home and make arrangements', status: 'todo' },
+              { description: 'Notify family members and close relatives', status: 'todo' },
+              { description: 'Arrange transportation for the deceased', status: 'todo' },
+              { description: 'Plan memorial service details', status: 'todo' },
+              { description: 'Arrange catering for after-service gathering', status: 'todo' },
+              { description: 'Prepare obituary and death notices', status: 'todo' },
+              { description: 'Coordinate with religious leader if applicable', status: 'todo' },
+              { description: 'Arrange flowers and decorations', status: 'todo' },
+              { description: 'Plan burial or cremation arrangements', status: 'todo' },
+              { description: 'Handle legal paperwork and certificates', status: 'todo' }
+            ]
+          }
+        ];
+
+        const defaultTemplate = defaultTemplates.find(t => t.name.toLowerCase().includes(eventData.category.toLowerCase()));
+
+        if (defaultTemplate) {
+          tasksToSave = defaultTemplate.tasks.map(task => ({
+            ...task,
+            eventId: event._id,
+            userId: req.user.id
+          }));
+        }
       }
-    } else {
-      // Generate tasks using AI
+    }
+
+    if (tasksToSave.length === 0) {
+      // Generate tasks using AI if no template tasks found
       const generatedTasks = await generateEventTasks(eventData);
       tasksToSave = generatedTasks.map(task => ({
         ...task,

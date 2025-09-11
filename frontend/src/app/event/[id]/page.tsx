@@ -690,17 +690,6 @@ export default function EventDetails() {
                               <option value="maybe">Maybe</option>
                               <option value="no">No</option>
                             </select>
-                            {guest.whatsappLink && (
-                              <a
-                                href={guest.whatsappLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-green-600 hover:text-green-800 text-sm"
-                                title="Send WhatsApp invite"
-                              >
-                                📱
-                              </a>
-                            )}
                             <button
                               onClick={() => handleEditGuest(guest)}
                               className="text-blue-600 hover:text-blue-800 text-sm"
@@ -727,7 +716,10 @@ export default function EventDetails() {
             <div className="bg-white shadow rounded-lg p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">Contributions</h2>
-                <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm">
+                <button
+                  onClick={() => router.push(`/contribute/${event._id}`)}
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm"
+                >
                   Make Contribution
                 </button>
               </div>
@@ -742,7 +734,7 @@ export default function EventDetails() {
                     ></div>
                   </div>
                   <p className="text-sm text-gray-600 mt-2">
-                    ${contributions.reduce((sum, c) => sum + c.amount, 0)} raised of ${event.budgetGoal} goal
+                    R{contributions.reduce((sum, c) => sum + c.amount, 0)} raised of R{event.budgetGoal} goal
                   </p>
                 </div>
               </div>
@@ -757,7 +749,7 @@ export default function EventDetails() {
                       <div>
                         <p className="font-medium">{contribution.contributorName}</p>
                         <p className="text-sm text-gray-600">
-                          ${contribution.amount} - {new Date(contribution.createdAt).toLocaleDateString()}
+                          R{contribution.amount} - {new Date(contribution.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                       <span className={`px-2 py-1 text-xs rounded-full ${

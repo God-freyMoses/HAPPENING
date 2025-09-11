@@ -16,10 +16,11 @@ router.get('/', auth, async (req, res) => {
     }
 
     const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    const rsvpUrl = `${baseUrl}/rsvp/${event._id}?phone=${guest.phone}`;
-    const contributeUrl = `${baseUrl}/contribute/${event._id}?phone=${guest.phone}`;
 
     const guestsWithLinks = guests.map(guest => {
+      const rsvpUrl = `${baseUrl}/rsvp/${event._id}?phone=${guest.phone}`;
+      const contributeUrl = `${baseUrl}/contribute/${event._id}?phone=${guest.phone}`;
+
       const message = encodeURIComponent(
         `Hi ${guest.name}! 🎉\n\n` +
         `You're invited to ${event.title}!\n` +
@@ -87,13 +88,14 @@ router.post('/send-invites/:eventId', auth, async (req, res) => {
     }
 
     const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    const rsvpUrl = `${baseUrl}/rsvp/${event._id}?phone=${guest.phone}`;
-    const contributeUrl = `${baseUrl}/contribute/${event._id}?phone=${guest.phone}`;
 
     const inviteResults = [];
 
     for (const guest of guests) {
       if (guest.phone) {
+        const rsvpUrl = `${baseUrl}/rsvp/${event._id}?phone=${guest.phone}`;
+        const contributeUrl = `${baseUrl}/contribute/${event._id}?phone=${guest.phone}`;
+
         const message = encodeURIComponent(
           `Hi ${guest.name}! 🎉\n\n` +
           `You're invited to ${event.title}!\n` +
