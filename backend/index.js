@@ -24,6 +24,11 @@ mongoose.connect(process.env.MONGODB_URI, {
   console.error('MongoDB connection error:', err);
 });
 
+// Log connection events
+mongoose.connection.on('connected', () => console.log('Mongoose connected to MongoDB'));
+mongoose.connection.on('error', (err) => console.error('Mongoose connection error:', err));
+mongoose.connection.on('disconnected', () => console.log('Mongoose disconnected'));
+
 app.get('/', (req, res) => {
   res.json({ message: 'Birthday Event Planning API' });
 });
