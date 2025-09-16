@@ -194,6 +194,7 @@ export default function EventDetails() {
       });
       setGuests(guestsResponse.data);
 
+
       setNewGuest({ name: '', phone: '', email: '' });
       setShowAddGuestForm(false);
     } catch (error) {
@@ -369,7 +370,7 @@ export default function EventDetails() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading event details...</p>
+          <p className="mt-4 text-black">Loading event details...</p>
         </div>
       </div>
     );
@@ -379,7 +380,7 @@ export default function EventDetails() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Event not found</h1>
+          <h1 className="text-2xl font-bold text-black">Event not found</h1>
           <button
             onClick={() => router.push('/dashboard')}
             className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
@@ -397,8 +398,8 @@ export default function EventDetails() {
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
-              <p className="text-gray-600">{event.category} Event</p>
+              <h1 className="text-3xl font-bold text-black">{event.title}</h1>
+              <p className="text-black">{event.category} Event</p>
             </div>
             <div className="flex space-x-4">
               <button
@@ -424,7 +425,7 @@ export default function EventDetails() {
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === tab
                       ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      : 'border-transparent text-gray-900 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -439,23 +440,23 @@ export default function EventDetails() {
               <h2 className="text-xl font-semibold mb-4">Event Details</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Date</h3>
-                  <p className="mt-1 text-sm text-gray-900">{new Date(event.date).toLocaleDateString()}</p>
+                  <h3 className="text-sm font-medium text-black">Date</h3>
+                  <p className="mt-1 text-sm text-black">{new Date(event.date).toLocaleDateString()}</p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Location</h3>
-                  <p className="mt-1 text-sm text-gray-900">{event.location}</p>
+                  <h3 className="text-sm font-medium text-gray-900">Location</h3>
+                  <p className="mt-1 text-sm text-black">{event.location}</p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Budget Goal</h3>
-                  <p className="mt-1 text-sm text-gray-900">R{event.budgetGoal}</p>
+                  <h3 className="text-sm font-medium text-gray-900">Budget Goal</h3>
+                  <p className="mt-1 text-sm text-black">R{event.budgetGoal}</p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Status</h3>
-                  <p className="mt-1 text-sm text-gray-900 capitalize">{event.status}</p>
+                  <h3 className="text-sm font-medium text-gray-900">Status</h3>
+                  <p className="mt-1 text-sm text-black capitalize">{event.status}</p>
                 </div>
                 <div className="md:col-span-2">
-                  <h3 className="text-sm font-medium text-gray-500">Funding Progress</h3>
+                  <h3 className="text-sm font-medium text-black">Funding Progress</h3>
                   <div className="mt-2">
                     <div className="bg-gray-200 rounded-full h-2">
                       <div
@@ -463,7 +464,7 @@ export default function EventDetails() {
                         style={{ width: `${event.fundingProgress}%` }}
                       ></div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{event.fundingProgress}% funded</p>
+                    <p className="text-xs text-black   mt-1">{event.fundingProgress}% funded</p>
                   </div>
                 </div>
               </div>
@@ -473,10 +474,10 @@ export default function EventDetails() {
           {activeTab === 'tasks' && (
             <div className="bg-white shadow rounded-lg p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Tasks</h2>
+                <h2 className="text-xl font-semibold text-black">Tasks</h2>
                 <button
                   onClick={() => setShowAddTaskForm(!showAddTaskForm)}
-                  className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm"
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm "
                 >
                   {showAddTaskForm ? 'Cancel' : 'Add Task'}
                 </button>
@@ -505,11 +506,11 @@ export default function EventDetails() {
 
               <div className="space-y-3">
                 {tasks.length === 0 ? (
-                  <p className="text-gray-500">No tasks yet</p>
+                  <p className="text-black">No tasks yet</p>
                 ) : (
                   tasks.map((task) => (
                     <div key={task._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-                      <div className="flex items-center flex-1">
+                      <div className="flex items-center text-black flex-1">
                         <input
                           type="checkbox"
                           checked={task.status === 'done'}
@@ -525,12 +526,12 @@ export default function EventDetails() {
                             onKeyPress={(e) => e.key === 'Enter' && handleSaveTask(task._id)}
                           />
                         ) : (
-                          <span className={`flex-1 ${task.status === 'done' ? 'line-through text-gray-500' : ''}`}>
+                          <span className={`flex-1 ${task.status === 'done' ? 'line-through text-black' : ''}`}>
                             {task.description}
                           </span>
                         )}
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-2 text-black">
                         {editingTask === task._id ? (
                           <>
                             <button
@@ -541,7 +542,7 @@ export default function EventDetails() {
                             </button>
                             <button
                               onClick={() => setEditingTask(null)}
-                              className="text-gray-600 hover:text-gray-800 text-sm"
+                              className="text-black hover:text-gray-800 text-sm"
                             >
                               Cancel
                             </button>
@@ -628,13 +629,13 @@ export default function EventDetails() {
 
               <div className="space-y-3">
                 {guests.length === 0 ? (
-                  <p className="text-gray-500">No guests yet</p>
+                  <p className="text-black text-center">No guests yet</p>
                 ) : (
                   guests.map((guest) => (
-                    <div key={guest._id} className="p-3 bg-gray-50 rounded-md">
+                    <div key={guest._id} className="p-3 bg-gray-50 text-black rounded-md">
                       {editingGuest === guest._id ? (
                         <div className="space-y-2">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                          <div className="grid grid-cols-1 text-blackmd:grid-cols-3 gap-2">
                             <input
                               type="text"
                               value={editGuest.name}
@@ -675,9 +676,9 @@ export default function EventDetails() {
                       ) : (
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium">{guest.name}</p>
-                            <p className="text-sm text-gray-600">{guest.phone}</p>
-                            {guest.email && <p className="text-sm text-gray-600">{guest.email}</p>}
+                            <p className="font-medium text-black">{guest.name}</p>
+                            <p className="text-sm text-black">{guest.phone}</p>
+                            {guest.email && <p className="text-sm text-black">{guest.email}</p>}
                           </div>
                           <div className="flex items-center space-x-2">
                             <select
@@ -742,7 +743,7 @@ export default function EventDetails() {
               <div className="space-y-3">
                 <h3 className="text-lg font-medium">Recent Contributions</h3>
                 {contributions.length === 0 ? (
-                  <p className="text-gray-500">No contributions yet</p>
+                  <p className="text-gray-900">No contributions yet</p>
                 ) : (
                   contributions.map((contribution) => (
                     <div key={contribution._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">

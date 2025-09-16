@@ -14,6 +14,9 @@ app.use(helmet());
 app.use(morgan('combined'));
 app.use(express.json());
 
+// Disable Mongoose buffering to fail immediately if not connected
+mongoose.set('bufferCommands', false);
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,

@@ -7,7 +7,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const router = express.Router();
 
 // Create payment intent
-router.post('/create-payment-intent', auth, async (req, res) => {
+router.post('/create-payment-intent', async (req, res) => {
   try {
     const { amount, eventId, contributorName } = req.body;
     const paymentIntent = await stripe.paymentIntents.create({
@@ -32,7 +32,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Create contribution (after payment)
-router.post('/', auth, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const contribution = new Contribution(req.body);
     await contribution.save();

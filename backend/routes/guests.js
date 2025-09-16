@@ -2,6 +2,9 @@ const express = require('express');
 const Guest = require('../models/Guest');
 const Event = require('../models/Event');
 const auth = require('../middleware/auth');
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const router = express.Router();
 
@@ -49,6 +52,56 @@ router.post('/', auth, async (req, res) => {
   try {
     const guest = new Guest(req.body);
     await guest.save();
+
+    // Send invitation email if email provided
+    if (guest.email) {
+      console.log('Attempting to send email to:', guest.email);
+      const event = await Event.findById(guest.eventId);
+      if (event) {
+        console.log('Event found:', event.title);
+        const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const rsvpUrl = `${baseUrl}/rsvp/${event._id}?phone=${guest.phone}`;
+        const contributeUrl = `${baseUrl}/contribute/${event._id}?phone=${guest.phone}`;
+
+        const message = `Hi ${guest.name}! 🎉\n\n` +
+          `You're invited to ${event.title}!\n` +
+          `📅 Date: ${new Date(event.date).toLocaleDateString()}\n` +
+          `📍 Location: ${event.location}\n\n` +
+          `RSVP here: ${rsvpUrl}\n` +
+          `Make a contribution: ${contributeUrl}\n\n` +
+          `We hope to see you there! 🎊`;
+
+        const whatsappUrl = `https://wa.me/${guest.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+
+        const emailMessage = {
+          to: guest.email,
+          from: 'noreply@happening.co.za', // Replace with your verified sender
+          subject: `You're Invited to ${event.title}!`,
+          text: message + `\n\nOr click this WhatsApp link: ${whatsappUrl}`,
+          html: `<p>Hi ${guest.name}! 🎉</p>
+                 <p>You're invited to <strong>${event.title}</strong>!</p>
+                 <p>📅 Date: ${new Date(event.date).toLocaleDateString()}</p>
+                 <p>📍 Location: ${event.location}</p>
+                 <p><a href="${rsvpUrl}">RSVP here</a></p>
+                 <p><a href="${contributeUrl}">Make a contribution</a></p>
+                 <p>Or <a href="${whatsappUrl}">send via WhatsApp</a></p>
+                 <p>We hope to see you there! 🎊</p>`
+        };
+
+        console.log('Email message prepared:', emailMessage);
+        try {
+          await sgMail.send(emailMessage);
+          console.log('Invitation email sent successfully to:', guest.email);
+        } catch (emailError) {
+          console.error('Failed to send invitation email to', guest.email, ':', emailError.message, emailError.response?.body);
+        }
+      } else {
+        console.log('Event not found for guest');
+      }
+    } else {
+      console.log('No email provided for guest');
+    }
+
     res.status(201).json(guest);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -96,17 +149,17 @@ router.post('/send-invites/:eventId', auth, async (req, res) => {
         const rsvpUrl = `${baseUrl}/rsvp/${event._id}?phone=${guest.phone}`;
         const contributeUrl = `${baseUrl}/contribute/${event._id}?phone=${guest.phone}`;
 
-        const message = encodeURIComponent(
-          `Hi ${guest.name}! 🎉\n\n` +
+        const plainMessage = `Hi ${guest.name}! 🎉\n\n` +
           `You're invited to ${event.title}!\n` +
           `📅 Date: ${new Date(event.date).toLocaleDateString()}\n` +
           `📍 Location: ${event.location}\n\n` +
           `RSVP here: ${rsvpUrl}\n` +
           `Make a contribution: ${contributeUrl}\n\n` +
-          `We hope to see you there! 🎊`
-        );
+          `We hope to see you there! 🎊`;
 
-        const whatsappUrl = `https://wa.me/${guest.phone.replace(/\D/g, '')}?text=${message}`;
+        const encodedMessage = encodeURIComponent(plainMessage);
+
+        const whatsappUrl = `https://wa.me/${guest.phone.replace(/\D/g, '')}?text=${encodedMessage}`;
 
         inviteResults.push({
           guest: guest.name,

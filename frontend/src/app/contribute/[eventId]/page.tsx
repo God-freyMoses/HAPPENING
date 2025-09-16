@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
+import router from 'next/router';
 
 interface Event {
   _id: string;
@@ -141,7 +142,7 @@ export default function Contribute() {
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{event.title}</h2>
             <p className="text-gray-600 capitalize">{event.category} Event</p>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-black mt-2">
               📅 {new Date(event.date).toLocaleDateString()} • 📍 {event.location}
             </p>
           </div>
@@ -209,7 +210,7 @@ export default function Contribute() {
                 Or Enter Custom Amount
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">R</span>
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-black">R</span>
                 <input
                   type="number"
                   value={amount}
@@ -242,7 +243,7 @@ export default function Contribute() {
             </div>
 
             {/* Security Note */}
-            <div className="text-center text-sm text-gray-500">
+            <div className="text-center text-sm text-black">
               <p>🔒 Secure payment processing powered by Stripe</p>
             </div>
           </div>
@@ -259,9 +260,17 @@ export default function Contribute() {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-8 text-gray-500 text-sm">
+        <div className="text-center mt-8 text-black text-sm">
           <p>Powered by Happening Event Planner</p>
         </div>
+        {/* back to dashboard button */}
+        <div className="text-center mt-8 text-black text-sm">
+          <button onClick={() => router.push('/dashboard')} className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+            Back to Dashboard
+          </button>
+        </div>
+        
+
       </div>
     </div>
   );

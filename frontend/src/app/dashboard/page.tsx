@@ -97,9 +97,9 @@ export default function Dashboard() {
               <div key={event._id} className="bg-white overflow-hidden shadow rounded-lg">
                 <div className="p-5">
                   <h3 className="text-lg font-medium text-gray-900">{event.title}</h3>
-                  <p className="text-sm text-gray-500">{event.category}</p>
-                  <p className="text-sm text-gray-500">{new Date(event.date).toLocaleDateString()}</p>
-                  <p className="text-sm text-gray-500">Status: {event.status}</p>
+                  <p className="text-sm text-black">{event.category}</p>
+                  <p className="text-sm text-black">{new Date(event.date).toLocaleDateString()}</p>
+                  <p className="text-sm text-black">Status: {event.status}</p>
                   <div className="mt-2">
                     <div className="bg-gray-200 rounded-full h-2">
                       <div
@@ -107,7 +107,7 @@ export default function Dashboard() {
                         style={{ width: `${event.fundingProgress}%` }}
                       ></div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{event.fundingProgress}% funded</p>
+                    <p className="text-xs text-black mt-1">{event.fundingProgress}% funded</p>
                   </div>
                   <div className="mt-4 flex space-x-2">
                     <button
